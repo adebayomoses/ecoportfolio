@@ -1,0 +1,133 @@
+---
+title: "Climate risk metrics with ecoPortfolio"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Climate risk metrics with ecoPortfolio}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+```
+
+```{r setup}
+library(ecoPortfolio)
+```
+
+`ecoPortfolio` computes the carbon metrics that TCFD and ISSB ask asset
+managers to disclose, explains where a portfolio's carbon exposure comes from,
+and stress-tests it against carbon price scenarios. The examples use the
+package's **fictional** example portfolio and benchmark.
+
+## 1. Put holdings in standard form
+
+`climate_portfolio()` checks the data and computes weights from market values.
+All monetary columns are in millions of one currency; emissions are in tCO2e.
+
+```{r}
+p <- climate_portfolio(example_portfolio)
+b <- climate_portfolio(example_benchmark, portfolio_value = 500)
+p
+```
+
+If your columns have other names, map them with
+`columns = c(scope1 = "my_scope1_col", ...)`.
+
+## 2. Core metrics
+
+```{r}
+waci(p)
+financed_emissions(p)
+carbon_footprint(p)
+climate_metrics(p, scopes = 1:3)
+```
+
+* **WACI** measures exposure to carbon-intensive companies (tCO2e per million
+  of revenue). It needs only weights, emissions and revenue.
+* **Financed emissions** are the emissions the portfolio "owns", attributed by
+  the share of enterprise value including cash (EVIC) held, as in the PCAF
+  standard.
+* **Carbon footprint** is financed emissions per million invested.
+
+Two holdings have no emissions data, so every metric covers about 90% of the
+portfolio. Always report coverage:
+
+```{r}
+data_coverage(p)
+```
+
+## 3. Where does the carbon come from?
+
+A handful of holdings usually dominate.
+
+```{r}
+head(waci_contribution(p), 5)
+plot_contribution(p)
+```
+
+## 4. Against the benchmark
+
+```{r}
+compare_benchmark(p, b)
+plot_sector_intensity(p, b)
+```
+
+The portfolio holds fewer utilities and energy companies than the
+benchmark, yet its WACI is higher. Attribution shows why: allocation effects
+are small, but the materials companies it picked are far more intensive than
+the sector average.
+
+```{r}
+a <- waci_attribution(p, b)
+a
+plot_attribution(a)
+```
+
+## 5. Carbon price stress test
+
+`carbon_stress_test()` applies carbon price paths to each holding's
+emissions. It reports the cost as a share of EBITDA (earnings at risk) and a
+valuation shock, which capitalises the cost with a multiple. The built-in
+`carbon_price_paths` are **illustrative only**; download official NGFS paths
+for real analysis.
+
+```{r}
+st <- carbon_stress_test(p, pass_through = 0.2)
+st
+plot_stress(st)
+```
+
+Holding-level results show who drives the loss:
+
+```{r}
+h <- st$holdings
+h <- h[h$scenario == "orderly" & h$year == 2030, ]
+head(h[order(h$value_shock), c("name", "carbon_cost", "earnings_at_risk", "value_shock")])
+```
+
+## 6. Open emissions data from Climate TRACE
+
+When you have no company-reported emissions, Climate TRACE publishes
+asset-level estimates with owners. Sum them to owners, then match the owners to
+your holdings by name. Many owners are subsidiaries, so use `aliases` to map
+them to listed parents, and check the matches.
+
+```{r, eval = FALSE}
+assets <- ct_assets(countries = "GBR", subsectors = "electricity-generation",
+                    year = 2022, limit = 200)
+owners <- owner_emissions(assets)
+head(owners)
+
+holdings <- data.frame(id = c("DRX", "RWE"), name = c("Drax Group", "RWE AG"),
+                       value = c(10, 15))
+matched <- match_holdings(
+  holdings, owners,
+  aliases = data.frame(from = "RWE Generation UK PLC", to = "RWE AG")
+)
+matched[, c("name", "scope1", "matched_name")]
+```
+
+Asset emissions are physical estimates (roughly scope 1) for one country and
+sector at a time, so they understate group-wide emissions. Treat them as a
+screening proxy.

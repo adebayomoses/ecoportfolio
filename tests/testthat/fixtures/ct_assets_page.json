@@ -1,0 +1,136 @@
+{
+  "assets": [
+    {
+      "Id": 448670,
+      "Name": "Pembroke power station",
+      "NativeId": "TRRACTXMER",
+      "Country": "GBR",
+      "Sector": "electricity-generation",
+      "AssetType": "gas",
+      "ReportingEntity": "climate-trace",
+      "EmissionsSummary": [
+        {
+          "Gas": "co2e_100yr",
+          "ActivityUnits": "MWh",
+          "Activity": 11576100,
+          "EmissionsFactorUnits": "t of CO2e_100yr per MWh",
+          "CapacityUnits": "MW",
+          "Capacity": 2305,
+          "CapacityFactor": 5022.16919739696,
+          "EmissionsFactor": 0.355128238353159,
+          "EmissionsQuantity": 4111000
+        }
+      ],
+      "Owners": [
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        },
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        },
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        },
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        },
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        },
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        },
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        },
+        {
+          "CompanyId": "E100000003874",
+          "CompanyName": "RWE Generation UK PLC"
+        }
+      ]
+    },
+    {
+      "Id": 4402925,
+      "Name": "Drax power station",
+      "NativeId": "TRRACTXMAC",
+      "Country": "GBR",
+      "Sector": "electricity-generation",
+      "AssetType": "biomass, gas, coal",
+      "ReportingEntity": "climate-trace",
+      "EmissionsSummary": [
+        {
+          "Gas": "co2e_100yr",
+          "ActivityUnits": "MWh",
+          "Activity": 16432000,
+          "EmissionsFactorUnits": "t of CO2e_100yr per MWh",
+          "CapacityUnits": "MW",
+          "Capacity": 4078,
+          "CapacityFactor": 4029.42618930848,
+          "EmissionsFactor": 0.234797955209348,
+          "EmissionsQuantity": 3858200
+        }
+      ],
+      "Owners": [
+        {
+          "CompanyId": "E100000001104",
+          "CompanyName": "Drax Group PLC"
+        },
+        {
+          "CompanyId": "E100000001104",
+          "CompanyName": "Drax Group PLC"
+        },
+        {
+          "CompanyId": "E100000001104",
+          "CompanyName": "Drax Group PLC"
+        },
+        {
+          "CompanyId": "E100000001104",
+          "CompanyName": "Drax Group PLC"
+        }
+      ]
+    },
+    {
+      "Id": 4403151,
+      "Name": "Ratcliffe power station",
+      "NativeId": "TRRACTAZIX",
+      "Country": "GBR",
+      "Sector": "electricity-generation",
+      "AssetType": "oil, coal",
+      "ReportingEntity": "climate-trace",
+      "EmissionsSummary": [
+        {
+          "Gas": "co2e_100yr",
+          "ActivityUnits": "MWh",
+          "Activity": 3697200,
+          "EmissionsFactorUnits": "t of CO2e_100yr per MWh",
+          "CapacityUnits": "MW",
+          "Capacity": 2204,
+          "CapacityFactor": 1677.49546279492,
+          "EmissionsFactor": 0.970572325002705,
+          "EmissionsQuantity": 3588400
+        }
+      ],
+      "Owners": [
+        {
+          "CompanyId": "E100000000457",
+          "CompanyName": "Uniper SE"
+        },
+        {
+          "CompanyId": "E100000000457",
+          "CompanyName": "Uniper SE"
+        },
+        {
+          "CompanyId": "E100000000457",
+          "CompanyName": "Uniper SE"
+        }
+      ]
+    }
+  ]
+}

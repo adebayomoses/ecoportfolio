@@ -1,0 +1,42 @@
+Package: ecoPortfolio
+Type: Package
+Title: Climate Risk Metrics for Equity Portfolios
+Version: 0.1.0
+Authors@R:
+    person("Moses", "Adebayo", , "adebayomoses2021@gmail.com", role = c("aut", "cre", "cph"))
+Description: Calculates the carbon metrics recommended for portfolio
+    disclosure by the Task Force on Climate-related Financial Disclosures
+    (TCFD) and the International Sustainability Standards Board (ISSB):
+    weighted average carbon intensity (WACI), financed emissions attributed
+    by enterprise value including cash as in the Partnership for Carbon
+    Accounting Financials (PCAF) standard, and carbon footprint. Also
+    reports data coverage, decomposes the WACI gap to a benchmark into
+    sector allocation and stock selection effects, and runs carbon price
+    stress tests that translate scenario paths into earnings at risk and
+    valuation shocks. Metrics work on emissions data you supply; optional
+    helpers download asset-level emissions and owners from the open
+    Climate TRACE API <https://climatetrace.org> and match owners to
+    holdings by normalised company name.
+License: MIT + file LICENSE
+URL: https://github.com/adebayomoses/ecoPortfolio
+BugReports: https://github.com/adebayomoses/ecoPortfolio/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    ggplot2 (>= 3.4.0),
+    httr2 (>= 1.0.0),
+    stats,
+    utils
+Suggests:
+    jsonlite,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.1.7),
+    withr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-GB
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
