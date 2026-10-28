@@ -60,8 +60,46 @@ test_that("holdings are matched by name and alias", {
   expect_error(match_holdings(h, data.frame(x = 1)), "owner_name")
 })
 
+fake_assets <- function(ids) {
+  lapply(ids, function(i) {
+    list(Id = i, Name = paste("Plant", i), Country = "GBR", Sector = "electricity-generation",
+         EmissionsSummary = list(list(Gas = "co2e_100yr", EmissionsQuantity = 100 * i)),
+         Owners = list(list(CompanyId = paste0("c", i), CompanyName = paste("Owner", i))))
+  })
+}
+
+test_that("ct_assets pages through results and sends filters (mocked)", {
+  seen <- list()
+  httr2::local_mocked_responses(function(req) {
+    q <- httr2::url_parse(req$url)$query
+    seen[[length(seen) + 1L]] <<- q
+    offset <- as.numeric(q$offset)
+    ids <- if (offset < 6) offset + seq_len(3) else integer()
+    httr2::response_json(body = list(assets = fake_assets(ids)))
+  })
+  a <- ct_assets(countries = c("GBR", "IRL"), subsectors = "electricity-generation",
+                 year = 2022, limit = 5, page_size = 3)
+  expect_equal(a$asset_id, as.character(1:5))
+  expect_equal(length(seen), 2)
+  expect_equal(seen[[1]]$countries, "GBR,IRL")
+  expect_equal(seen[[1]]$subsectors, "electricity-generation")
+  expect_equal(seen[[2]]$offset, "3")
+  expect_null(seen[[1]]$sectors)
+
+  b <- ct_assets(year = 2022, limit = 50, page_size = 3)  # stops on a short page
+  expect_equal(nrow(b), 6)
+})
+
+test_that("API failures raise a classed, informative error (mocked)", {
+  httr2::local_mocked_responses(function(req) httr2::response(status_code = 500))
+  expect_error(ct_sectors(), class = "ecoPortfolio_api_error")
+  expect_error(ct_sectors(), "Climate TRACE request failed")
+})
+
 test_that("the live Climate TRACE API returns assets", {
-  skip_on_cran()
+  # Opt-in, so CRAN and CI never depend on an external service.
+  skip_if_not(identical(Sys.getenv("ECOPORTFOLIO_LIVE_TESTS"), "true"),
+              "Set ECOPORTFOLIO_LIVE_TESTS=true to run live API tests")
   skip_if_offline("api.climatetrace.org")
   a <- ct_assets(countries = "GBR", subsectors = "electricity-generation",
                  year = 2022, limit = 5, page_size = 3)

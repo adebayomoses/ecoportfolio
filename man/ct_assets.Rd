@@ -51,12 +51,18 @@ owners, \code{share} assumes equal ownership; replace it if you know better.
 Asset emissions are physical (roughly scope 1) and are a proxy, not a
 substitute, for company-reported figures.
 }
+\section{Errors}{
+
+If the Climate TRACE API cannot be reached or returns an error, the
+function fails with an error of class \code{ecoPortfolio_api_error}.
+}
+
 \examples{
-\dontrun{
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 uk_power <- ct_assets(countries = "GBR", subsectors = "electricity-generation",
                       year = 2022, limit = 50)
 owner_emissions(uk_power)
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=owner_emissions]{owner_emissions()}}, \code{\link[=match_holdings]{match_holdings()}}

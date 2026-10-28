@@ -15,8 +15,14 @@ A character vector.
 \description{
 Climate TRACE sector and subsector names
 }
-\examples{
-\dontrun{
-ct_subsectors()
+\section{Errors}{
+
+If the Climate TRACE API cannot be reached or returns an error, the
+function fails with an error of class \code{ecoPortfolio_api_error}.
 }
+
+\examples{
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
+ct_subsectors()
+\dontshow{\}) # examplesIf}
 }

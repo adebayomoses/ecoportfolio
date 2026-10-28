@@ -30,5 +30,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Moses Adebayo \email{adebayomoses2021@gmail.com} [copyright holder]
 
+Authors:
+\itemize{
+  \item Moses Adebayo \email{adebayomoses2021@gmail.com} [copyright holder]
+}
+
 }
 \keyword{internal}

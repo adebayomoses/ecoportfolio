@@ -22,16 +22,17 @@
 #' @return A data frame with `asset_id`, `asset_name`, `country`,
 #'   `subsector`, `year`, `emissions` (tCO2e, 100-year GWP), `owner_id`,
 #'   `owner_name`, `n_owners` and `share`.
+#' @section Errors:
+#' If the Climate TRACE API cannot be reached or returns an error, the
+#' function fails with an error of class `ecoPortfolio_api_error`.
 #' @seealso [owner_emissions()], [match_holdings()]
 #' @source Climate TRACE, <https://climatetrace.org>. Data are released under
 #'   the Creative Commons Attribution 4.0 licence; cite Climate TRACE when you
 #'   use them.
-#' @examples
-#' \dontrun{
+#' @examplesIf interactive()
 #' uk_power <- ct_assets(countries = "GBR", subsectors = "electricity-generation",
 #'                       year = 2022, limit = 50)
 #' owner_emissions(uk_power)
-#' }
 #' @export
 ct_assets <- function(countries = NULL, subsectors = NULL, sectors = NULL,
                       year = 2022, limit = 1000, page_size = 100) {
@@ -67,10 +68,11 @@ ct_assets <- function(countries = NULL, subsectors = NULL, sectors = NULL,
 #' Climate TRACE sector and subsector names
 #'
 #' @return A character vector.
-#' @examples
-#' \dontrun{
+#' @section Errors:
+#' If the Climate TRACE API cannot be reached or returns an error, the
+#' function fails with an error of class `ecoPortfolio_api_error`.
+#' @examplesIf interactive()
 #' ct_subsectors()
-#' }
 #' @export
 ct_subsectors <- function() {
   unlist(ct_request("definitions/subsectors", list()))
@@ -228,7 +230,13 @@ ct_request <- function(path, query) {
   resp <- tryCatch(
     httr2::req_perform(req),
     error = function(e) {
-      stop("Climate TRACE request failed: ", conditionMessage(e), call. = FALSE)
+      stop(structure(
+        class = c("ecoPortfolio_api_error", "error", "condition"),
+        list(message = paste0("Climate TRACE request failed: ", conditionMessage(e),
+                              "
+Check your internet connection or try again later."),
+             call = NULL, parent = e)
+      ))
     }
   )
   httr2::resp_body_json(resp, simplifyVector = FALSE)
