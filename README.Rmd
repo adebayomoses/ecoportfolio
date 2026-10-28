@@ -1,0 +1,105 @@
+---
+output:
+  github_document:
+    html_preview: false
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.path = "man/figures/README-", fig.width = 8, fig.height = 4.5,
+  dpi = 120, out.width = "100%"
+)
+```
+
+# ecoPortfolio
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/adebayomoses/ecoPortfolio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/adebayomoses/ecoPortfolio/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/adebayomoses/ecoPortfolio/graph/badge.svg)](https://app.codecov.io/gh/adebayomoses/ecoPortfolio)
+<!-- badges: end -->
+
+Climate risk metrics for equity portfolios in R.
+
+`ecoPortfolio` provides:
+
+- **Disclosure metrics** recommended by TCFD and ISSB: weighted average carbon
+  intensity (`waci()`), PCAF-style financed emissions (`financed_emissions()`)
+  and carbon footprint (`carbon_footprint()`), always reported with data
+  coverage.
+- **Attribution.** Find the holdings and sectors driving exposure
+  (`waci_contribution()`), and split the gap to a benchmark into sector
+  allocation and stock selection (`waci_attribution()`).
+- **Carbon price stress tests.** Earnings at risk and valuation shocks under
+  scenario price paths (`carbon_stress_test()`).
+- **Open data.** Asset-level emissions and owners from the Climate TRACE API
+  (`ct_assets()`, `owner_emissions()`), matched to holdings by normalised name
+  (`match_holdings()`).
+- **Charts.** TCFD/ISSB-aligned disclosure plots built with ggplot2
+  (`plot_contribution()`, `plot_sector_intensity()`, `plot_attribution()`,
+  `plot_stress()`).
+
+## Installation
+
+```r
+# install.packages("remotes")
+remotes::install_github("adebayomoses/ecoPortfolio")
+```
+
+## Example
+
+The package ships a **fictional** 20-holding portfolio and a 60-company
+benchmark.
+
+```{r metrics}
+library(ecoPortfolio)
+
+p <- climate_portfolio(example_portfolio)
+b <- climate_portfolio(example_benchmark, portfolio_value = 500)
+
+climate_metrics(p)
+```
+
+A few holdings usually account for most of the carbon exposure:
+
+```{r contribution, fig.alt = "Horizontal bar chart of each holding's share of portfolio WACI; two materials companies account for about 80 percent"}
+plot_contribution(p)
+```
+
+The portfolio holds fewer utilities and energy companies than its benchmark,
+yet its WACI is higher. Attribution shows why: the materials companies it
+picked are far more carbon-intensive than the sector average.
+
+```{r attribution, fig.alt = "Bar chart of allocation and selection effects by sector; selection in materials adds most to the WACI gap"}
+compare_benchmark(p, b)
+plot_attribution(waci_attribution(p, b))
+```
+
+Under carbon price scenarios, the portfolio loses value as prices rise:
+
+```{r stress, fig.alt = "Line chart of portfolio value loss from 2025 to 2050 under orderly, disorderly and hot house scenarios"}
+st <- carbon_stress_test(p, pass_through = 0.2)
+plot_stress(st)
+```
+
+See `vignette("ecoPortfolio")` for the full workflow, including Climate TRACE
+data.
+
+## Caveats
+
+- The example portfolio, benchmark and `carbon_price_paths` are **synthetic
+  and illustrative**. For real stress tests, use official NGFS scenario paths
+  from <https://data.ece.iiasa.ac.at/ngfs/>.
+- The stress test is a transparent first-order model (cost × multiple, capped
+  at market value). It is meant for teaching and screening, not as a forecast.
+- Climate TRACE emissions are independent physical estimates for individual
+  assets. Owners are often subsidiaries, and ownership shares are not
+  published (equal shares are assumed). Check matches before relying on them.
+- The plots support disclosure aligned with TCFD and ISSB recommendations.
+  They do not by themselves make a report compliant with any regulation.
+
+## Data credits
+
+Climate TRACE data are available under CC BY 4.0: <https://climatetrace.org>.
